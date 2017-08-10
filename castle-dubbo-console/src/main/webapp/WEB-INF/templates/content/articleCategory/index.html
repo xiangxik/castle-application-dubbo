@@ -1,0 +1,201 @@
+<!doctype html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<section class="content-header">
+		<h1>
+			文章分类 <small>文章分类</small>
+		</h1>
+		<ol class="breadcrumb">
+			<li><a href="javascript:;"><i class="fa fa-newspaper-o"></i> 内容管理</a></li>
+			<li class="active">文章分类</li>
+		</ol>
+	</section>
+
+	<section class="content">
+		<div class="row">
+			<div class="col-md-3">
+				<div class="box box-solid">
+					<div class="box-header with-border">
+						<h3 class="box-title">文章分类</h3>
+					</div>
+					<div class="box-body">
+						<div class="mailbox-controls">
+							<div class="btn-group btn-group-sm">
+								<a id="add-button" class="btn btn-primary" href="javascript:;"> <i class="fa fa-plus"></i> 添加
+								</a> <a class="btn btn-primary" href="javascript:;" id="delete-button"> <i class="glyphicon glyphicon-remove"></i>
+									删除
+								</a>
+							</div>
+						</div>
+						<div id="tree_view"></div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-9">
+				<div class="box box-primary hide" id="edit-info">
+					<div class="box-header with-border">
+						<h3 class="box-title">请输入文章分类信息</h3>
+					</div>
+					<form id="form-category" class="form-horizontal" th:action="@{/content/articleCategory/save}" method="post">
+						<input type="hidden" name="id" id="input-id" />
+						<div class="box-body">
+							<div class="form-group">
+								<label for="input-name" class="col-sm-2 control-label"><i class="required-tip">*</i>名称</label>
+
+								<div class="col-sm-10">
+									<input class="form-control" id="input-name" placeholder="请输入名称" name="name" type="text" data-bv-notempty="true"
+										data-bv-notempty-message="请填写名称">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="input-parent" class="col-sm-2 control-label">上级分类</label>
+
+								<div class="col-sm-10">
+									<span class="form-control" id="text-parent"></span> <input id="input-parent" name="parent" type="hidden">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="input-sortNo" class="col-sm-2 control-label">排序号</label>
+
+								<div class="col-sm-10">
+									<input class="form-control" id="input-sortNo" placeholder="请输入排序号" name="sortNo" type="text">
+								</div>
+							</div>
+
+						</div>
+						<div class="box-footer">
+							<button type="button" class="btn btn-default" onclick="location.href='#/page/member/admin'">返回列表</button>
+							<button type="submit" class="btn btn-success pull-right">保存</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+
+
+	<script type="text/javascript">
+		requirejs([ "domReady", "fancytree", "validator" ], function(ready) {
+			ready(function() {
+				activeMenu("content_articleCategory");
+
+				var $input_id = $("#input-id");
+				var $input_name = $("#input-name");
+				var $input_parent = $("#input-parent");
+				var $text_parent = $("#text-parent");
+				var $input_sortNo = $("#input-sortNo");
+				var initForm = function(node) {
+					$input_id.val(node.data.id);
+					$input_name.val(node.data.name);
+					if (node.parent.data.id) {
+						$input_parent.val(node.parent.data.id);
+						$text_parent.text(node.parent.data.name);
+					} else {
+						$input_parent.val("");
+						$text_parent.text("");
+					}
+
+					$input_sortNo.val(node.data.sortNo);
+				}
+
+				var $edit_info = $("#edit-info");
+				var $treeView = $("#tree_view");
+				$treeView.fancytree({
+					source : {
+						url : base + "/content/articleCategory/tree",
+						method : "post"
+					},
+					activate : function(event, data) {
+						if (data.node) {
+							if (data.node.data.id) {
+								$edit_info.removeClass("hide");
+								initForm(data.node);
+							} else {
+								$edit_info.addClass("hide");
+							}
+						}
+					}
+				});
+
+				var $addButton = $("#add-button");
+				$addButton.on("click", function() {
+					var node = $treeView.fancytree("getActiveNode");
+					$.post(base + "/content/articleCategory/addChild", {
+						parent : node.data.id
+					}, function(resp) {
+						node.addChildren(resp).setActive();
+					});
+				});
+				
+				$("#delete-button").on("click", function() {
+					$.confirm({
+						title : "确认信息",
+						content : "确定要删除吗？",
+						buttons : {
+							confirm : {
+								text : "确定",
+								action : function() {
+									var node = $treeView.fancytree("getActiveNode");
+									if(node.hasChildren()) {
+										$.alert({
+											title : false,
+											content : "该分类有子分类，不能删除",
+											buttons : {
+												ok : {
+													text : "确定"
+												}
+											}
+										});
+										return true;
+									}
+									if(node.data.id) {
+										$.post(base + "/content/articleCategory/delete", {
+											ids : [node.data.id]
+										}, function(resp) {
+											node.remove();
+										});
+									}
+								}
+							},
+							cancel : {
+								text : "取消"
+							}
+						}
+					});
+				});
+
+				$("#form-category").bootstrapValidator().on("success.form.bv", function(e) {
+					e.preventDefault();
+					var $form = $(e.target);
+					var bv = $form.data('bootstrapValidator');
+					$.post($form.attr('action'), $form.serialize(), function(result) {
+						if (result.success) {
+							$.alert({
+								title : false,
+								content : "保存成功",
+								buttons : {
+									ok : {
+										text : "确定",
+										action : function() {
+											$.ui.fancytree.getTree("#tree_view").reload();
+										}
+									}
+								}
+							});
+						} else {
+							$.alert({
+								title : false,
+								content : result.msg
+							});
+						}
+						$form.bootstrapValidator('disableSubmitButtons', false);
+					}, "json");
+				});
+			});
+		});
+	</script>
+</body>
+</html>
+

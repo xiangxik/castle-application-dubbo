@@ -1,0 +1,116 @@
+<!doctype html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<section class="content-header">
+		<h1>
+			广告位 <small th:text="(${entity.new}?'新建':'编辑')+'广告位'"></small>
+		</h1>
+		<ol class="breadcrumb">
+			<li><a href="javascript:;"><i class="fa fa-newspaper-o"></i> 内容管理</a></li>
+			<li class="active" th:text="(${entity.new}?'新建':'编辑')+'广告位'"></li>
+		</ol>
+	</section>
+
+	<section class="content">
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">请输入广告位信息</h3>
+			</div>
+			<form id="form-main" class="form-horizontal" th:action="@{/content/adPosition/save}" method="post"
+				th:object="${entity}">
+				<input type="hidden" name="id" th:value="*{id}" />
+				<div class="box-body">
+					<div class="form-group">
+						<label for="input-name" class="col-sm-2 control-label"><i class="required-tip">*</i>名称</label>
+
+						<div class="col-sm-10">
+							<input class="form-control" id="input-name" placeholder="请输入名称" th:field="*{name}" type="text"
+								data-bv-notempty="true" data-bv-notempty-message="请填写名称">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="input-code" class="col-sm-2 control-label"><i class="required-tip">*</i>代号</label>
+
+						<div class="col-sm-10">
+							<input class="form-control" id="input-code" placeholder="请输入代号" th:field="*{code}" type="text"
+								data-bv-notempty="true" data-bv-notempty-message="请填写代号">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="input-width" class="col-sm-2 control-label"><i class="required-tip">*</i>宽度</label>
+
+						<div class="col-sm-10">
+							<input class="form-control" id="input-width" placeholder="请输入宽度" th:field="*{width}" type="text"
+								data-bv-notempty="true" data-bv-notempty-message="请填写宽度">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="input-height" class="col-sm-2 control-label"><i class="required-tip">*</i>高度</label>
+
+						<div class="col-sm-10">
+							<input class="form-control" id="input-height" placeholder="请输入高度" th:field="*{height}" type="text"
+								data-bv-notempty="true" data-bv-notempty-message="请填写高度">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="input-description" class="col-sm-2 control-label">描述</label>
+
+						<div class="col-sm-10">
+							<input class="form-control" id="input-description" placeholder="请输入描述" th:field="*{description}" type="text">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="input-template"><i class="required-tip">*</i>模版</label>
+						<div class="col-sm-10">
+							<textarea class="form-control" id="input-template" name="template" rows="10" placeholder="请输入模版"
+								th:utext="*{template}"></textarea>
+						</div>
+					</div>
+				</div>
+				<div class="box-footer">
+					<button type="button" class="btn btn-default" onclick="location.href='#/page/content/adPosition'">返回列表</button>
+					<button type="submit" class="btn btn-success pull-right">保存</button>
+				</div>
+			</form>
+		</div>
+	</section>
+
+
+	<script type="text/javascript">
+		requirejs([ "domReady", "validator" ], function(ready) {
+			ready(function() {
+				activeMenu("content_adPosition");
+
+				$("#form-main").bootstrapValidator().on("success.form.bv", function(e) {
+					e.preventDefault();
+					var $form = $(e.target);
+					var bv = $form.data('bootstrapValidator');
+					$.post($form.attr('action'), $form.serialize(), function(result) {
+						if (result.success) {
+							$.alert({
+								title : false,
+								content : "保存成功",
+								buttons : {
+									ok : {
+										text : "返回列表",
+										action : function() {
+											location.href = "#/page/content/adPosition";
+										}
+									}
+								}
+							});
+						} else {
+							$.alert({
+								title : false,
+								content : result.msg
+							});
+							$form.bootstrapValidator('disableSubmitButtons', false);
+						}
+					}, "json");
+				});
+			});
+		});
+	</script>
+</body>
+</html>
+

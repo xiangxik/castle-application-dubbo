@@ -1,0 +1,92 @@
+<!doctype html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>后台管理系统</title>
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+<link rel="stylesheet"
+	href="http://cdn.staticfile.org/pace/1.0.2/themes/white/pace-theme-flash.min.css">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- Theme style -->
+<link rel="stylesheet"
+	th:href="@{/assets/adminlte/css/AdminLTE.min.css}">
+<link rel="stylesheet"
+	th:href="@{/assets/adminlte/css/skins/skin-red.min.css}">
+
+<link rel="stylesheet" th:href="@{/assets/adminlte/css/custom.css}">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+<body class="hold-transition skin-red sidebar-mini fixed">
+	<!-- Site wrapper -->
+	<div class="wrapper">
+
+		<div th:replace="/layout/header :: main"></div>
+		<!-- =============================================== -->
+
+		<!-- Left side column. contains the sidebar -->
+		<div th:replace="/layout/sidebar :: main"></div>
+
+		<!-- =============================================== -->
+
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper"></div>
+		<!-- /.content-wrapper -->
+
+		<div th:replace="/layout/footer :: main"></div>
+
+		<!-- Control Sidebar -->
+		<div th:replace="/layout/control :: main"></div>
+	</div>
+	<!-- ./wrapper -->
+
+	<script type="text/javascript"
+		src="http://cdn.staticfile.org/pace/1.0.2/pace.min.js"></script>
+	<script type="text/javascript" th:inline="javascript">
+		var base = /*[[${#httpServletRequest.getContextPath()}]]*/"";
+		var activeMenu = function(code) {
+			Pace.restart();
+
+			var $sidebarMenu = $(".sidebar-menu");
+			$sidebarMenu.find("li").removeClass("active");
+
+			var menu = $sidebarMenu.find(".menu_" + code);
+			var parentCode = menu.data("parent-code");
+			if (!parentCode) {
+				parentCode = code.substring(0, code.indexOf("_"));
+			}
+			if (parentCode && parentCode != "") {
+				$sidebarMenu.find(".menu_" + parentCode).addClass("active");
+			}
+			menu.addClass("active");
+		};
+
+		var parseQueryString = function(arr_url) {
+			var reg_para = /([^&=]+)=([\w\W]*?)(&|$|#)/g, ret = {};
+			if (arr_url) {
+				var str_para = arr_url, result;
+				while ((result = reg_para.exec(str_para)) != null) {
+					if (result[2]) {
+						ret[result[1]] = decodeURIComponent(result[2]);
+					}
+				}
+			}
+			return ret;
+		};
+	</script>
+	<script th:data-main="@{/assets/main.js}" type="text/javascript"
+		src="http://cdn.staticfile.org/require.js/2.3.2/require.min.js"></script>
+		
+	
+</body>
+</html>
+

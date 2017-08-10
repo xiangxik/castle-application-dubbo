@@ -1,0 +1,243 @@
+<!doctype html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<section class="content-header">
+		<h1>
+			文章 <small th:text="(${entity.new}?'新建':'编辑')+'文章'"></small>
+		</h1>
+		<ol class="breadcrumb">
+			<li><a href="javascript:;"><i class="fa fa-newspaper-o"></i> 内容管理</a></li>
+			<li class="active" th:text="(${entity.new}?'新建':'编辑')+'文章'"></li>
+		</ol>
+	</section>
+
+	<section class="content">
+		<form id="form-article" th:action="@{/content/article/save}" method="post" th:object="${entity}">
+			<input type="hidden" name="id" th:value="*{id}" />
+			<div class="row">
+				<div class="col-md-9">
+					<div class="box box-primary">
+						<div class="box-header with-border">
+							<h3 class="box-title">请输入文章信息</h3>
+						</div>
+						<div class="box-body">
+							<div class="form-group">
+								<label for="input-title"><i class="required-tip">*</i>标题</label> <input class="form-control" id="input-title"
+									name="title" th:value="*{title}" placeholder="请输入标题" type="text" data-bv-notempty="true"
+									data-bv-notempty-message="请填写标题">
+							</div>
+
+							<div class="form-group">
+								<label for="input-summary"><i class="required-tip">*</i>摘要</label>
+
+								<textarea class="form-control" id="input-summary" name="summary" rows="3" placeholder="请输入摘要"
+									th:utext="*{summary}"></textarea>
+							</div>
+
+							<div class="form-group">
+								<label for="input-content"><i class="required-tip">*</i>内容</label>
+
+								<textarea class="gui-textarea editor form-control" style="width: 100%" id="input-content" name="content"
+									rows="3" placeholder="请输入内容" th:utext="*{content}"></textarea>
+							</div>
+
+						</div>
+					</div>
+					<div class="box box-primary">
+						<div class="box-header with-border">
+							<h3 class="box-title">属性设置</h3>
+						</div>
+						<div class="box-body">
+							<div class="nav-tabs-custom">
+								<ul class="nav nav-tabs">
+									<li class="active"><a href="#tab_normal" data-toggle="tab">常用</a></li>
+									<li><a href="#tab_seo" data-toggle="tab">SEO</a></li>
+								</ul>
+								<div class="tab-content" style="min-height: 200px;">
+									<div class="tab-pane form-horizontal active" id="tab_normal">
+										<div class="form-group">
+											<label for="input-author" class="col-sm-2 control-label">作者</label>
+
+											<div class="col-sm-10">
+												<input class="form-control" id="input-author" placeholder="请输入作者" name="author" th:value="*{author}"
+													type="text">
+											</div>
+										</div>
+									</div>
+									<div class="tab-pane form-horizontal" id="tab_seo">
+
+										<div class="form-group">
+											<label for="input-seoTitle" class="col-sm-2 control-label">标题</label>
+
+											<div class="col-sm-10">
+												<input class="form-control" id="input-seoTitle" placeholder="请输入标题" name="seoTitle" th:value="*{seoTitle}"
+													type="text">
+											</div>
+										</div>
+
+										<div class="form-group">
+											<label for="input-seoKeywords" class="col-sm-2 control-label">关键字</label>
+
+											<div class="col-sm-10">
+												<input class="form-control" id="input-seoKeywords" placeholder="请输入关键字" name="seoKeywords"
+													th:value="*{seoKeywords}" type="text">
+											</div>
+										</div>
+
+										<div class="form-group">
+											<label for="input-seoDescription" class="col-sm-2 control-label">描述</label>
+
+											<div class="col-sm-10">
+												<textarea class="form-control" id="input-seoDescription" name="seoDescription" rows="3" placeholder="请输入描述"
+													th:utext="*{seoDescription}"></textarea>
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="box box-primary">
+						<div class="box-body">
+							<div class="checkbox icheck">
+								<label> <input type="checkbox" th:field="*{published}"> 发布
+								</label>
+							</div>
+							<div class="checkbox icheck">
+								<label> <input type="checkbox" th:field="*{stick}"> 置顶
+								</label>
+							</div>
+						</div>
+						<div class="box-footer">
+							<button type="button" class="btn btn-default" onclick="location.href='#/page/content/article'">返回列表</button>
+							<button type="submit" class="btn btn-success">提交</button>
+						</div>
+					</div>
+					<div class="box box-primary">
+						<div class="box-header with-border">
+							<h3 class="box-title">分类</h3>
+						</div>
+						<div class="box-body">
+							<div id="tree_view"></div>
+						</div>
+					</div>
+					<div class="box box-primary">
+						<div class="box-header with-border">
+							<h3 class="box-title">标签</h3>
+						</div>
+						<div class="box-body">
+							<div class="checkbox icheck" th:each="tag:${tags}">
+								<label> <input type="checkbox" name="tags" th:value="${tag.id}"
+									th:checked="${#sets.contains(entity.tags, tag)}"> [[${tag.name}]]
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</form>
+	</section>
+
+	<script type="text/javascript" th:inline="javascript">
+		var category = /*[[${entity.category==null?'':entity.category.id}]]*/"";
+	</script>
+
+	<script type="text/javascript">
+		requirejs([ "domReady", "validator", "fancytree", "kindeditor", "icheck" ], function(ready) {
+			ready(function() {
+				activeMenu("content_article");
+
+				$('.icheck input').iCheck({
+					checkboxClass : 'icheckbox_square-blue',
+					radioClass : 'iradio_square-blue',
+					increaseArea : '20%' // optional
+				});
+
+				KindEditor.create('#form-article .editor', {
+					langType : "zh-CN",
+					uploadJson : base + "/kindeditor/upload",
+					fileManagerJson : base + "/kindeditor/list",
+					allowFileManager : true,
+					wellFormatMode : true,
+					newlineTag : "p",
+					minHeight : 400,
+					resizeType : 1,
+					imageSizeLimit : '10MB',
+					imageUploadLimit : 100
+				});
+
+				var $treeView = $("#tree_view");
+				$treeView.fancytree({
+					source : {
+						url : base + "/content/articleCategory/tree",
+						method : "post",
+						data : {
+							checked : category
+						}
+					},
+					checkbox : true,
+					selectMode : 1,
+					activate : function(event, data) {
+						if (data.node) {
+							if (data.node.data.id) {
+							} else {
+							}
+						}
+					}
+				});
+
+				var $articleForm = $("#form-article");
+				$articleForm.bootstrapValidator().on("success.form.bv", function(e) {
+					e.preventDefault();
+					var $form = $(e.target);
+					var $tree = $("#tree_view").fancytree("getTree");
+					if ($tree.getSelectedNodes().length > 0) {
+						$tree.generateFormElements("category", false);
+
+						var bv = $form.data('bootstrapValidator');
+						$.post($form.attr('action'), $form.serialize(), function(result) {
+							if (result.success) {
+								$.alert({
+									title : false,
+									content : "保存成功",
+									buttons : {
+										ok : {
+											text : "返回列表",
+											action : function() {
+												location.href = "#/page/content/article";
+											}
+										}
+									}
+								});
+							} else {
+								$.alert({
+									title : false,
+									content : result.msg
+								});
+								$form.bootstrapValidator('disableSubmitButtons', false);
+							}
+						}, "json");
+					} else {
+						$.alert({
+							title : false,
+							content : "请选择分类",
+							buttons : {
+								ok : {
+									action : function() {
+										$form.bootstrapValidator('disableSubmitButtons', false);
+									}
+								}
+							}
+						});
+					}
+				});
+			});
+		});
+	</script>
+</body>
+</html>
+

@@ -1,0 +1,56 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>me.xiangxik</groupId>
+    <artifactId>castle-application-dubbo</artifactId>
+    <version>1.0</version>
+  </parent>
+  <artifactId>castle-dubbo-portal</artifactId>
+  <packaging>war</packaging>
+  
+  <dependencies>
+		<dependency>
+			<groupId>com.castle</groupId>
+			<artifactId>castle-template-thymeleaf</artifactId>
+			<version>${castle-platform.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.castle</groupId>
+			<artifactId>castle-theme-adminlte</artifactId>
+			<version>${castle-platform.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.castle</groupId>
+			<artifactId>castle-security</artifactId>
+			<version>${castle-platform.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.castle</groupId>
+			<artifactId>castle-integration-webapp</artifactId>
+			<version>${castle-platform.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.castle</groupId>
+			<artifactId>castle-integration-dubbo</artifactId>
+			<version>${castle-platform.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>me.xiangxik</groupId>
+			<artifactId>castle-dubbo-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<!-- web.xml is not mandatory since JavaEE 5 -->
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

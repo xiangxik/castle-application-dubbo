@@ -1,0 +1,140 @@
+<!doctype html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>注册页面</title>
+<!-- Tell the browser to be responsive to screen width -->
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="shortcut icon" th:href="@{/assets/favicon.ico}" href="/favicon.ico" />
+<link rel="bookmark" th:href="@{/assets/favicon.ico}" href="/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/jquery-confirm/2.5.1/jquery-confirm.min.css">
+<link rel="stylesheet" th:href="@{/assets/adminlte/css/AdminLTE.min.css}">
+<link rel="stylesheet" th:href="@{/assets/adminlte/css/skins/skin-purple-light.min.css}">
+<link rel="stylesheet" th:href="@{/assets/adminlte/css/custom.css}">
+<link rel="stylesheet" href="//cdn.bootcss.com/iCheck/1.0.2/skins/square/blue.css">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+</head>
+<body class="hold-transition register-page">
+	<div class="register-box">
+		<div class="register-logo">
+			<a th:href="@{/}" th:text="#{site.name}"></a>
+		</div>
+
+		<div class="register-box-body">
+			<p class="login-box-msg">会员注册</p>
+
+			<form th:action="@{/register}" method="post">
+				<div class="form-group has-feedback">
+					<input type="text" class="form-control" name="username" placeholder="账号" autocomplete="off" data-bv-notempty="true"
+						data-bv-notempty-message="请填写账号" data-bv-stringlength="true" data-bv-stringlength-min="2"
+						data-bv-stringlength-max="10" data-bv-stringlength-message="账号必须是2-10个字符之间" data-bv-different="true"
+						data-bv-different-field="password" data-bv-different-message="账号不能和密码一样"> <span
+						class="glyphicon glyphicon-user form-control-feedback"></span>
+				</div>
+				<div class="form-group has-feedback">
+					<input type="password" class="form-control" name="password" autocomplete="off" placeholder="密码"
+						data-bv-notempty="true" data-bv-notempty-message="请填写密码" data-bv-different="true"
+						data-bv-different-field="username" data-bv-different-message="密码不能和账号一样"> <span
+						class="glyphicon glyphicon-lock form-control-feedback"></span>
+				</div>
+				<div class="form-group has-feedback">
+					<input type="password" class="form-control" name="repeatPassword" autocomplete="off" placeholder="重复输入密码"
+						data-bv-notempty="true" data-bv-notempty-message="请填写重复密码" data-bv-identical="true"
+						data-bv-identical-field="password" data-bv-identical-message="与密码不一致"> <span
+						class="glyphicon glyphicon-lock form-control-feedback"></span>
+				</div>
+				<div class="form-group has-feedback">
+					<input type="text" class="form-control" name="name" placeholder="姓名" autocomplete="off" data-bv-notempty="true"
+						data-bv-notempty-message="请填写姓名" data-bv-stringlength="true" data-bv-stringlength-min="2"
+						data-bv-stringlength-max="10" data-bv-stringlength-message="姓名必须是2-10个字符之间" data-bv-different="true"
+						data-bv-different-field="password" data-bv-different-message="姓名不能和密码一样"> <span
+						class="glyphicon glyphicon-user form-control-feedback"></span>
+				</div>
+				<div class="row">
+					<div class="col-xs-8">
+						<div class="checkbox icheck">
+							<label> <input type="checkbox" name="agree" checked> 同意 <a href="#">《用户协议》</a>
+							</label>
+						</div>
+					</div>
+					<!-- /.col -->
+					<div class="col-xs-4">
+						<button type="submit" class="btn btn-primary btn-block btn-flat">注册</button>
+					</div>
+					<!-- /.col -->
+				</div>
+			</form>
+
+<!-- 
+			<div class="social-auth-links text-center">
+				<p>- 或者 -</p>
+				<a th:href="@{/authorization/qqOauthPlugin}" class="btn btn-block btn-social btn-qq btn-flat"> <i
+					class="fa fa-qq"></i> 使用QQ登录
+				</a> <a th:href="@{/authorization/weiboOauthPlugin}" class="btn btn-block btn-social btn-weibo btn-flat"> <i
+					class="fa fa-weibo"></i> 使用微博登录
+				</a> <a th:href="@{/authorization/githubOauthPlugin}" class="btn btn-block btn-social btn-github btn-flat"> <i
+					class="fa fa-github"></i> 使用Github登录
+				</a>
+			</div>
+ -->
+			<a th:href="@{/login}" href="login.html" class="text-center">我已经有账号，去登录</a>
+		</div>
+		<!-- /.form-box -->
+	</div>
+	<!-- /.register-box -->
+
+	<script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/2.2.4/jquery-2.2.4.min.js"></script>
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="http://cdn.staticfile.org/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js"></script>
+	<script src="//cdn.bootcss.com/iCheck/1.0.2/icheck.min.js"></script>
+	<script src="//cdn.bootcss.com/jquery-confirm/2.5.1/jquery-confirm.min.js"></script>
+	<script type="text/javascript" th:inline="javascript">
+		var base = /*[[${#httpServletRequest.getContextPath()}]]*/"";
+		$(function() {
+			$("input[type=checkbox]").iCheck({
+				checkboxClass : 'icheckbox_square-blue',
+				radioClass : 'iradio_square-blue',
+				increaseArea : '20%' // optional
+			});
+
+			var formValidator = $("form").bootstrapValidator();
+			formValidator.on('success.form.bv', function(e) {
+				e.preventDefault();
+
+				var $form = $(e.target);
+
+				var bv = $form.data('bootstrapValidator');
+
+				$.post($form.attr("action"), $form.serialize(), function(result) {
+					if (result.success) {
+						$.alert({
+							title : false,
+							content : "恭喜你，注册成功！",
+							confirmButton : "登录",
+							confirm : function() {
+								location.href = base + "/login";
+							}
+						});
+					} else {
+
+						$form.bootstrapValidator('disableSubmitButtons', false);
+					}
+				}, "json");
+			});
+		});
+	</script>
+</body>
+</html>
+

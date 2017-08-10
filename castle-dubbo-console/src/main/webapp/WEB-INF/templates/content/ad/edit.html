@@ -1,0 +1,184 @@
+<!doctype html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<section class="content-header">
+		<h1>
+			广告 <small th:text="(${entity.new}?'新建':'编辑')+'广告'"></small>
+		</h1>
+		<ol class="breadcrumb">
+			<li><a href="javascript:;"><i class="fa fa-newspaper-o"></i> 内容管理</a></li>
+			<li class="active" th:text="(${entity.new}?'新建':'编辑')+'广告'"></li>
+		</ol>
+	</section>
+
+	<section class="content">
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">请输入广告信息</h3>
+			</div>
+			<form id="form-main" class="form-horizontal" th:action="@{/content/ad/save}" method="post" th:object="${entity}">
+				<input type="hidden" name="id" th:value="*{id}" />
+				<div class="box-body">
+					<div class="form-group">
+						<label for="input-title" class="col-sm-2 control-label"><i class="required-tip">*</i>标题</label>
+
+						<div class="col-sm-10">
+							<input class="form-control" id="input-title" placeholder="请输入标题" th:field="*{title}" type="text"
+								data-bv-notempty="true" data-bv-notempty-message="请填写标题">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="input-type" class="col-sm-2 control-label"><i class="required-tip">*</i>类型</label>
+
+						<div class="col-sm-10">
+							<select id="input-type" class="form-control" th:field="*{type}"
+								th:enumOption="com.sample.business.content.entity.AdEntity$Type">
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="input-adPosition" class="col-sm-2 control-label"><i class="required-tip">*</i>广告位</label>
+
+						<div class="col-sm-10">
+							<select id="input-adPosition" class="form-control" th:field="*{adPosition}">
+								<option th:each="adPosition:${adPositions}"
+									th:text="${adPosition.name}+' ['+${adPosition.width}+'x'+${adPosition.height}+']'" th:value="${adPosition.id}">
+								</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="input-content">内容</label>
+
+						<div class="col-sm-10">
+							<textarea class="gui-textarea editor form-control" style="width: 100%" id="input-content" name="content" rows="3"
+								placeholder="请输入内容" th:utext="*{content}"></textarea>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="input-path" class="col-sm-2 control-label">文件</label>
+
+						<div class="col-sm-10">
+							<input type="file" id="input-path" class="file-loading" name="file"> <input type="hidden" name="path"
+								th:value="*{path}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="input-beginDate" class="col-sm-2 control-label">开始时间</label>
+
+						<div class="col-sm-10">
+							<input size="19" type="text" id="input-beginDate" name="beginDate"
+								th:value="*{#dates.format(beginDate, 'yyyy-MM-dd HH:mm:ss')}" readonly class="form-control form_datetime">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="input-endDate" class="col-sm-2 control-label">结束时间</label>
+
+						<div class="col-sm-10">
+							<input size="19" type="text" id="input-endDate" name="endDate"
+								th:value="*{#dates.format(endDate, 'yyyy-MM-dd HH:mm:ss')}" readonly class="form-control form_datetime">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="input-url" class="col-sm-2 control-label">链接地址</label>
+
+						<div class="col-sm-10">
+							<input class="form-control" id="input-url" placeholder="请输入链接地址" th:field="*{url}" type="text">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="input-sortNo" class="col-sm-2 control-label">排序号</label>
+
+						<div class="col-sm-10">
+							<input class="form-control" id="input-sortNo" placeholder="请输入排序号" th:field="*{sortNo}" type="text">
+						</div>
+					</div>
+				</div>
+				<div class="box-footer">
+					<button type="button" class="btn btn-default" onclick="location.href='#/page/content/ad'">返回列表</button>
+					<button type="submit" class="btn btn-success pull-right">保存</button>
+				</div>
+			</form>
+		</div>
+	</section>
+
+
+	<script type="text/javascript">
+		requirejs([ "domReady", "validator", "fileinput", "kindeditor", "datetimepicker" ], function(ready) {
+			ready(function() {
+				activeMenu("content_ad");
+
+				$(".form_datetime").datetimepicker({
+					format : "yyyy-mm-dd hh:ii:ss"
+				});
+
+				var $fileUpload = $("#input-path");
+				var $fileInput = $("#form-main input[name=path]");
+				$fileUpload.fileinput({
+					uploadUrl : base + "/multipart/upload",
+					language : "zh",
+					initialCaption : $fileInput.val(),
+					showPreview : false,
+					multiple : false,
+					showUpload : false, // hide upload button
+					showRemove : false, // hide remove button
+					minFileCount : 1,
+					maxFileCount : 1,
+					maxFileSize : 200 * 1024 * 1024
+				}).on("filebatchselected", function(event, files) {
+					$(this).fileinput("upload");
+				}).on('fileuploaded', function(event, data, previewId, index) {
+					response = data.response;
+					if (response.success) {
+						$fileInput.val(response.urls);
+					}
+				});
+
+				KindEditor.create('#form-main .editor', {
+					langType : "zh-CN",
+					uploadJson : base + "/kindeditor/upload",
+					fileManagerJson : base + "/kindeditor/list",
+					allowFileManager : true,
+					wellFormatMode : true,
+					newlineTag : "p",
+					minHeight : 200,
+					resizeType : 1,
+					imageSizeLimit : '10MB',
+					imageUploadLimit : 100
+				});
+
+				$("#form-main").bootstrapValidator().on("success.form.bv", function(e) {
+					e.preventDefault();
+					var $form = $(e.target);
+					var bv = $form.data('bootstrapValidator');
+					$.post($form.attr('action'), $form.serialize(), function(result) {
+						if (result.success) {
+							$.alert({
+								title : false,
+								content : "保存成功",
+								buttons : {
+									ok : {
+										text : "返回列表",
+										action : function() {
+											location.href = "#/page/content/ad";
+										}
+									}
+								}
+							});
+						} else {
+							$.alert({
+								title : false,
+								content : result.msg
+							});
+							$form.bootstrapValidator('disableSubmitButtons', false);
+						}
+					}, "json");
+				});
+			});
+		});
+	</script>
+</body>
+</html>
+

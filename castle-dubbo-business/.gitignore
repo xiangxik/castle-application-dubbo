@@ -3,7 +3,6 @@
 .settings/
 .project
 /target/
-/src/main/webapp/upload
 .classpath
 *.iml
 .idea

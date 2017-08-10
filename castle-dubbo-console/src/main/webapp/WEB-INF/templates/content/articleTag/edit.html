@@ -1,0 +1,92 @@
+<!doctype html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<section class="content-header">
+		<h1>
+			文章标签 <small th:text="(${entity.new}?'新建':'编辑')+'文章标签'"></small>
+		</h1>
+		<ol class="breadcrumb">
+			<li><a href="javascript:;"><i class="fa fa-newspaper-o"></i> 内容管理</a></li>
+			<li class="active" th:text="(${entity.new}?'新建':'编辑')+'文章标签'"></li>
+		</ol>
+	</section>
+
+	<section class="content">
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">请输入文章标签信息</h3>
+			</div>
+			<form id="form-main" class="form-horizontal" th:action="@{/content/articleTag/save}" method="post"
+				th:object="${entity}">
+				<input type="hidden" name="id" th:value="*{id}" />
+				<div class="box-body">
+					<div class="form-group">
+						<label for="input-name" class="col-sm-2 control-label"><i class="required-tip">*</i>名称</label>
+
+						<div class="col-sm-10">
+							<input class="form-control" id="input-name" placeholder="请输入名称" th:field="*{name}" type="text"
+								data-bv-notempty="true" data-bv-notempty-message="请填写名称">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="input-icon" class="col-sm-2 control-label">图标</label>
+
+						<div class="col-sm-10">
+							<input class="form-control" id="input-icon" placeholder="请输入图标" th:field="*{icon}" type="text">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="input-memo" class="col-sm-2 control-label">备注</label>
+
+						<div class="col-sm-10">
+							<input class="form-control" id="input-memo" placeholder="请输入备注" th:field="*{memo}" type="text">
+						</div>
+					</div>
+				</div>
+				<div class="box-footer">
+					<button type="button" class="btn btn-default" onclick="location.href='#/page/content/articleTag'">返回列表</button>
+					<button type="submit" class="btn btn-success pull-right">保存</button>
+				</div>
+			</form>
+		</div>
+	</section>
+
+
+	<script type="text/javascript">
+		requirejs([ "domReady", "validator" ], function(ready) {
+			ready(function() {
+				activeMenu("content_articleTag");
+
+				$("#form-main").bootstrapValidator().on("success.form.bv", function(e) {
+					e.preventDefault();
+					var $form = $(e.target);
+					var bv = $form.data('bootstrapValidator');
+					$.post($form.attr('action'), $form.serialize(), function(result) {
+						if (result.success) {
+							$.alert({
+								title : false,
+								content : "保存成功",
+								buttons : {
+									ok : {
+										text : "返回列表",
+										action : function() {
+											location.href = "#/page/content/articleTag";
+										}
+									}
+								}
+							});
+						} else {
+							$.alert({
+								title : false,
+								content : result.msg
+							});
+							$form.bootstrapValidator('disableSubmitButtons', false);
+						}
+					}, "json");
+				});
+			});
+		});
+	</script>
+</body>
+</html>
+

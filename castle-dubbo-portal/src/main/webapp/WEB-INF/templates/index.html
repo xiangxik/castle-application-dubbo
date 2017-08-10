@@ -1,0 +1,126 @@
+<!doctype html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title th:text="#{site.seo.title}"></title>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="shortcut icon" th:href="@{/assets/favicon.ico}" href="/favicon.ico" />
+<link rel="bookmark" th:href="@{/assets/favicon.ico}" href="/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" th:href="@{/assets/adminlte/css/AdminLTE.min.css}">
+<link rel="stylesheet" th:href="@{/assets/adminlte/css/skins/skin-purple-light.min.css}">
+<link rel="stylesheet" th:href="@{/assets/adminlte/css/custom.css}">
+<!--[if lt IE 9]>
+  <script src="//cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+<body class="hold-transition skin-purple-light layout-top-nav">
+	<div class="wrapper">
+
+		<div th:replace="/layout/header :: main"></div>
+
+		<div class="content-wrapper">
+			<div class="container">
+				<!-- Main content -->
+				<section class="content">
+					<div class="row">
+						<div class="col-sm-9">
+							<div class="box box-solid">
+								<div class="box-body">
+									<div class="bb" portal:adPosition="index_carousel"></div>
+								</div>
+							</div>
+
+							<div class="box box-solid" th:each="article:${articles}">
+								<div class="box-header with-border">
+									<h3 class="box-title" ><a th:href="@{/article/}+${article.id}" th:text="${article.title}"></a></h3>
+								</div>
+								<div class="box-body" th:text="${article.summary}"></div>
+								<div class="box-footer">
+									<span><i class="fa fa-user"></i> [[${article.author}]]</span> &nbsp; 
+									<span><i class="fa fa-list"></i> [[${article.category.name}]]</span> &nbsp; 
+									<span><i class="fa fa-clock-o"></i> [[${#dates.format(article.publishedDate, 'yyyy-MM-dd HH:mm:ss')}]]</span>
+								</div>
+							</div>
+
+							<div class="clearfix">
+								<ul class="pagination no-margin" portal:page="${articles}" url="/">
+								</ul>
+							</div>
+						</div>
+						<div class="col-sm-3">
+
+							<div class="box box-solid">
+								<div class="box-header with-border">
+									<h3 class="box-title">搜索文章</h3>
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body text-center">
+									<div class="input-group">
+										<input type="text" class="form-control"> <span class="input-group-btn">
+											<button type="button" class="btn btn-info btn-flat">搜索</button>
+										</span>
+									</div>
+								</div>
+								<!-- /.box-body -->
+							</div>
+
+							<div class="box box-solid">
+								<div class="box-header with-border">
+									<h3 class="box-title">热评文章</h3>
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body text-center"></div>
+								<!-- /.box-body -->
+							</div>
+
+							<div class="box box-solid">
+								<div class="box-header with-border">
+									<h3 class="box-title">推荐文章</h3>
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body text-center"></div>
+								<!-- /.box-body -->
+							</div>
+
+							<div class="box box-solid">
+								<div class="box-header with-border">
+									<h3 class="box-title">热门标签</h3>
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body text-center"></div>
+								<!-- /.box-body -->
+							</div>
+						</div>
+					</div>
+
+
+					<!-- /.box -->
+				</section>
+				<!-- /.content -->
+			</div>
+			<!-- /.container -->
+		</div>
+		<!-- /.content-wrapper -->
+		<div th:replace="/layout/footer :: main"></div>
+	</div>
+	<!-- ./wrapper -->
+	<script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/2.2.4/jquery-2.2.4.min.js"></script>
+	<script type="text/javascript" th:inline="javascript">
+		var base = /*[[${#httpServletRequest.getContextPath()}]]*/"";
+		$(document).ajaxError(function(evt, req, settings) {
+			if (req && (req.status === 200 || req.status === 0)) {
+				return false;
+			}
+			if (req && req.status === 403) {
+				location.href = base + "/login";
+			}
+		});
+	</script>
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html>
